@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "addresses": {
+      "properties": {
+        "alusd3crv-fAddress": {
+          "type": "string"
+        },
+        "balancerVaultAddress": {
+          "type": "string"
+        },
+        "convergentPoolFactoryAddress": {
+          "v1": "string",
+          "v1_1": "string"
+        },
+        "crv3cryptoAddress": {
+          "type": "string"
+        },
+        "crvtricryptoAddress": {
+          "type": "string"
+        },
+        "daiAddress": {
+          "type": "string"
+        },
+        "eurscrvAddress": {
+          "type": "string"
+        },
+        "lusd3crv-fAddress": {
+          "type": "string"
+        },
+        "mim-3lp3crv-fAddress": {
+          "type": "string"
+        },
+        "stecrvAddress": {
+          "type": "string"
+        },
+        "trancheFactoryAddress": {
+          "type": "string"
+        },
+        "usdcAddress": {
+          "type": "string"
+        },
+        "userProxyContractAddress": {
+          "type": "string"
+        },
+        "wbtcAddress": {
+          "type": "string"
+        },
+        "weightedPoolFactoryAddress": {
+          "type": "string"
+        },
+        "wethAddress": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "balancerVaultAddress",
+        "convergentPoolFactoryAddress",
+        "trancheFactoryAddress",
+        "stecrvAddress",
+        "usdcAddress",
+        "lusd3crv-fAddress",
+        "crvtricryptoAddress",
+        "daiAddress",
+        "userProxyContractAddress",
+        "weightedPoolFactoryAddress",
+        "wethAddress",
+        "crv3cryptoAddress",
+        "wbtcAddress",
+        "alusd3crv-fAddress",
+        "mim-3lp3crv-fAddress",
+        "eurscrvAddress"
+      ],
+      "type": "object"
+    },
+    "chainId": {
+      "type": "number"
+    },
+    "safelist": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "addresses",
+    "chainId",
+    "safelist"
+  ],
+  "type": "object"
+}

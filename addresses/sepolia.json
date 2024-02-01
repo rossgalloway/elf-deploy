@@ -1,0 +1,28 @@
+{
+  "tokens": {
+    "dai": "0x11a7105D424db9E3341e37c2E347817D35546747",
+    "usdc": "0xEFF08a02AaE8a2111Ded133975c4C7Bd9df400aA",
+    "weth": "0xc2ad20A968BAD70256aA2a0fDfc64936a555B22F"
+  },
+  "interestTokenFactory": "0xA09d40b540c11fcee7326558caFA7e0f823747ab",
+  "dateStringLibrary": "0x89c8081051e359144f782d9831dafeb751329E54",
+  "trancheFactory": "0x4fb4072c92ecde197caac9323c6dff9d447ec5bd",
+  "tranches": {},
+  "userProxy": "0x7B579289234b2E7C22deCea08a1473D1229e2Ae1",
+  "vaults": {
+    "yearn": {
+      "dai": "0xBEf705211D34657418c3ADd3DB19c5d75873Edf3",
+      "usdc": "0x5907bA29e42C8544a8ECE8de42383F98B2fB2087",
+      "weth": "0x96c550fA2a76A3e700983F55D45b35dcba280494"
+    }
+  },
+  "wrappedPositions": {
+    "v1": {
+      "yearn": {
+        "dai": "0xD75f4808C00d880f1bE32AEae438E20ae51b9F03",
+        "usdc": "0x4873D8fB3fC76cF96c4aDd2A388e78909fd43293",
+        "weth": "0x80C21713B935E568846B0784466542A4861e571d"
+      }
+    }
+  }
+}

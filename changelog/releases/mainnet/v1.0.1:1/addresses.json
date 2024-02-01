@@ -1,0 +1,86 @@
+{
+	"tokens": {
+		"usdc": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+		"weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+		"dai": "0x6b175474e89094c44da98b954eedeac495271d0f",
+		"lusd3crv-f": "0xed279fdd11ca84beef15af5d39bb4d4bee23f0ca",
+		"crvtricrypto": "0xca3d75ac011bf5ad07a98d02f18225f9bd9a6bdf"
+	},
+	"wrappedPositions": {
+		"yearn": {
+			"lusd3crv-f": "0x53b1aEAa018da00b4F458Cc13d40eB3e8d1B85d6",
+			"crvtricrypto": "0x97278Ce17D4860f8f49afC6E4c1C5AcBf2584cE5"
+		}
+	},
+	"vaults": {
+		"yearn": {
+			"lusd3crv-f": "0x5fA5B62c8AF877CB37031e0a3B2f34A78e3C56A6",
+			"crvtricrypto": "0x3D980E50508CFd41a13837A60149927a11c03731"
+		}
+	},
+	"trancheFactory": "0x62F161BF3692E4015BefB05A03a94A40f520d1c0",
+	"userProxy": "0xEe4e158c03A10CBc8242350d74510779A364581C",
+	"balancerVault": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+	"weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+	"convergentCurvePoolFactory": "0xb7561f547F3207eDb42A6AfA42170Cd47ADD17BD",
+	"tranches": {
+		"lusd3crv-f": [
+			{
+				"address": "0x9b44Ed798a10Df31dee52C5256Dcb4754BCf097E",
+				"expiration": 1632834462,
+				"trancheFactory": "0x62F161BF3692E4015BefB05A03a94A40f520d1c0",
+				"ptPool": {
+					"address": "0xA8D4433BAdAa1A35506804B43657B0694deA928d",
+					"poolId": "0xa8d4433badaa1a35506804b43657b0694dea928d00020000000000000000005e",
+					"fee": "0.1",
+					"timeStretch": 16
+				},
+				"ytPool": {
+					"address": "0xDe620bb8BE43ee54d7aa73f8E99A7409Fe511084",
+					"poolId": "0xde620bb8be43ee54d7aa73f8e99a7409fe51108400020000000000000000005d",
+					"fee": "0.003"
+				},
+				"weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+				"convergentCurvePoolFactory": "0xb7561f547F3207eDb42A6AfA42170Cd47ADD17BD"
+			},
+			{
+				"expiration": 1640620258,
+				"address": "0xa2b3d083AA1eaa8453BfB477f062A208Ed85cBBF",
+				"trancheFactory": "0x62F161BF3692E4015BefB05A03a94A40f520d1c0",
+				"ptPool": {
+					"address": "0x893B30574BF183d69413717f30b17062eC9DFD8b",
+					"poolId": "0x893b30574bf183d69413717f30b17062ec9dfd8b000200000000000000000061",
+					"fee": "0.1",
+					"timeStretch": 24
+				},
+				"ytPool": {
+					"address": "0x67F8FCb9D3c463da05DE1392EfDbB2A87F8599Ea",
+					"poolId": "0x67f8fcb9d3c463da05de1392efdbb2a87f8599ea000200000000000000000060",
+					"fee": "0.003"
+				},
+				"weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+				"convergentCurvePoolFactory": "0xb7561f547F3207eDb42A6AfA42170Cd47ADD17BD"
+			}
+		],
+		"crvtricrypto": [
+			{
+				"expiration": 1628997564,
+				"address": "0x237535Da7e2f0aBa1b68262ABCf7C4e60B42600C",
+				"trancheFactory": "0x62F161BF3692E4015BefB05A03a94A40f520d1c0",
+				"ptPool": {
+					"address": "0x3A693EB97b500008d4Bb6258906f7Bbca1D09Cc5",
+					"poolId": "0x3a693eb97b500008d4bb6258906f7bbca1d09cc5000200000000000000000065",
+					"fee": "0.1",
+					"timeStretch": 6.16
+				},
+				"ytPool": {
+					"address": "0xF94A7Df264A2ec8bCEef2cFE54d7cA3f6C6DFC7a",
+					"poolId": "0xf94a7df264a2ec8bceef2cfe54d7ca3f6c6dfc7a000200000000000000000064",
+					"fee": "0.003"
+				},
+				"weightedPoolFactory": "0x8E9aa87E45e92bad84D5F8DD1bff34Fb92637dE9",
+				"convergentCurvePoolFactory": "0xb7561f547F3207eDb42A6AfA42170Cd47ADD17BD"
+			}
+		]
+	}
+}

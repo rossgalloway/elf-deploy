@@ -1,0 +1,9 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["frontend-*.json"],
+      "url": "./addresses.schema.json"
+    }
+  ],
+  "cSpell.words": ["Keccak", "sepolia"]
+}
