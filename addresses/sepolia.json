@@ -1,28 +1,55 @@
 {
-  "tokens": {
-    "dai": "0x11a7105D424db9E3341e37c2E347817D35546747",
-    "usdc": "0xEFF08a02AaE8a2111Ded133975c4C7Bd9df400aA",
-    "weth": "0xc2ad20A968BAD70256aA2a0fDfc64936a555B22F"
-  },
-  "interestTokenFactory": "0xA09d40b540c11fcee7326558caFA7e0f823747ab",
-  "dateStringLibrary": "0x89c8081051e359144f782d9831dafeb751329E54",
-  "trancheFactory": "0x4fb4072c92ecde197caac9323c6dff9d447ec5bd",
-  "tranches": {},
-  "userProxy": "0x7B579289234b2E7C22deCea08a1473D1229e2Ae1",
-  "vaults": {
-    "yearn": {
-      "dai": "0xBEf705211D34657418c3ADd3DB19c5d75873Edf3",
-      "usdc": "0x5907bA29e42C8544a8ECE8de42383F98B2fB2087",
-      "weth": "0x96c550fA2a76A3e700983F55D45b35dcba280494"
-    }
-  },
-  "wrappedPositions": {
-    "v1": {
-      "yearn": {
-        "dai": "0xD75f4808C00d880f1bE32AEae438E20ae51b9F03",
-        "usdc": "0x4873D8fB3fC76cF96c4aDd2A388e78909fd43293",
-        "weth": "0x80C21713B935E568846B0784466542A4861e571d"
-      }
-    }
-  }
+	"tokens": {
+		"dai": "0x11a7105D424db9E3341e37c2E347817D35546747",
+		"usdc": "0xEFF08a02AaE8a2111Ded133975c4C7Bd9df400aA",
+		"weth": "0xc2ad20A968BAD70256aA2a0fDfc64936a555B22F"
+	},
+	"interestTokenFactory": "0x59B0e571622bfde932201C20aBA3d7A2942C6604",
+	"dateStringLibrary": "0x9F17eA677659A264d16A38507e1511e83366fa32",
+	"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376",
+	"tranches": {
+		"weth": [
+			{
+				"expiration": 1706830860,
+				"address": "0x622B2D7B5d25A4F358ffC98Bb79cbA7Cd7cC2707",
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+			}
+		],
+		"dai": [
+			{
+				"expiration": 1706915760,
+				"address": "0x89D653cC64fbBC0644c9A9Ea8b0375D2dC92Ebf5",
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+			}
+		],
+		"usdc": [
+			{
+				"expiration": 1706907936,
+				"address": "0x98DFd1DC5554bB48bF11CD81f8460477346D8974",
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+			},
+			{
+				"expiration": 1706916576,
+				"address": "0x839F1b3b01D9078B68737A8Ecdcd0117529E5976",
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+			}
+		]
+	},
+	"userProxy": "0x5bed7976366ac62d2f27f61E6a70BC19a640D456",
+	"vaults": {
+		"yearn": {
+			"dai": "0xBEf705211D34657418c3ADd3DB19c5d75873Edf3",
+			"usdc": "0x5907bA29e42C8544a8ECE8de42383F98B2fB2087",
+			"weth": "0x96c550fA2a76A3e700983F55D45b35dcba280494"
+		}
+	},
+	"wrappedPositions": {
+		"v1": {
+			"yearn": {
+				"dai": "0x00745394E632901Ea5b05FF809A8a69754BC6538",
+				"usdc": "0x1160f3B472BAF3410f893445091Cff3689a747d1",
+				"weth": "0x11a83732ca97Ec8b92CB0a95f2f421f4B73D8d95"
+			}
+		}
+	}
 }

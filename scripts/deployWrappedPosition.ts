@@ -12,12 +12,15 @@ import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
 // An example of deploying a contract using the deployer.
 // preps for deployment of wrapped position
 // returns the addresses object with the wrapped position address added
-async function deployWrappedPositionWithAddresses(
+export async function deployV1WrappedYearnPosition(
   addresses: YieldForGoodAddresses,
   underlyingTokenSymbol: string
 ) {
   if (addresses.vaults.yearn[underlyingTokenSymbol] == undefined) {
-    console.log('Error: please init yearn vault wrapper')
+    console.log('Error: please check yearn vault address')
+    return
+  } else if (addresses.tokens[underlyingTokenSymbol] == undefined) {
+    console.log('Error: please check underlying token address')
     return
   }
   const underlyingTokenAddress = addresses.tokens[underlyingTokenSymbol]
@@ -37,10 +40,8 @@ async function deployWrappedPositionWithAddresses(
   const wrappedPositionAddress = await deployWrappedPosition(
     wrappedPositionDeployData
   )
-  addresses.wrappedPositions.v1.yearn[underlyingTokenSymbol] =
-    wrappedPositionAddress
 
-  return addresses
+  return wrappedPositionAddress
 }
 
 async function main() {
@@ -49,9 +50,10 @@ async function main() {
   switch (network?.chainId) {
     case 11155111: {
       let sepolia: YieldForGoodAddresses = _sepolia as any
+      console.log('Deploying wrapped positions')
       const positionsToDeploy = ['dai', 'usdc', 'weth']
       for (const underlyingTokenSymbol of positionsToDeploy) {
-        const result = await deployWrappedPositionWithAddresses(
+        const result = await deployV1WrappedYearnPosition(
           sepolia,
           underlyingTokenSymbol
         )
@@ -61,7 +63,7 @@ async function main() {
           )
           return
         }
-        sepolia = result
+        sepolia.wrappedPositions.v1.yearn[underlyingTokenSymbol] = result
       }
       console.log(
         "writing changed address to output file 'addresses/sepolia.json'"

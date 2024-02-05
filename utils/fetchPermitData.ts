@@ -17,6 +17,17 @@ export interface PermitCallData {
 }
 
 // Uses a default infinite permit expiration time
+/**
+ *
+ * @param signer accepts a signer
+ * @param token ERC20Permit TokenContract of the underlying asset
+ * @param tokenName underlying asset token name
+ * @param sourceAddr where the underlying assets are coming from (the signer)
+ * @param spenderAddr the userProxy contract address
+ * @param nonce underlying token nonce
+ * @param version the permit version (typically '1' for most ERC20Permit tokens)
+ * @returns
+ */
 export async function fetchPermitData(
   signer: Signer,
   token: ERC20Permit,
@@ -103,4 +114,19 @@ export async function fetchPermitData(
     s,
     v
   }
+}
+
+// USDC is normally uses version '2'.  In development and goerli we are using a simple ERC20 for our USDC
+// contract so we keep it at version '1'.
+export function getPermitVersion(
+  tokenAddress: string,
+  network: number
+): string {
+  const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+  if (network !== 1) {
+    return '1'
+  }
+
+  const version = tokenAddress === usdcAddress ? '2' : '1'
+  return version
 }

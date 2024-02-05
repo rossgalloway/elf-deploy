@@ -5,5 +5,5 @@
       "url": "./addresses.schema.json"
     }
   ],
-  "cSpell.words": ["Keccak", "sepolia"]
+  "cSpell.words": ["Keccak", "sepolia", "typechain"]
 }

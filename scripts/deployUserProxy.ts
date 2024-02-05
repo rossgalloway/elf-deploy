@@ -10,7 +10,9 @@ import _sepolia from '../addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
 
 // An example of deploying a contract using the deployer. This deploys the user Proxy.
-async function deployProxyWithAddresses(addresses: YieldForGoodAddresses) {
+export async function deployProxyWithAddresses(
+  addresses: YieldForGoodAddresses
+) {
   const weth = addresses.tokens.weth
   const trancheFactory = addresses.trancheFactory
   const trancheBytecodeHash = ethers.utils.solidityKeccak256(
@@ -24,9 +26,7 @@ async function deployProxyWithAddresses(addresses: YieldForGoodAddresses) {
     trancheBytecodeHash
   }
   const proxyAddress = await deployUserProxy(userProxyDeployData)
-  addresses.userProxy = proxyAddress
-
-  return addresses
+  return proxyAddress
 }
 
 async function main() {
@@ -35,13 +35,15 @@ async function main() {
   switch (network?.chainId) {
     case 11155111: {
       const sepolia: YieldForGoodAddresses = _sepolia as any
-      const result = await deployProxyWithAddresses(sepolia)
+      const proxyAddress = await deployProxyWithAddresses(sepolia)
+      sepolia.userProxy = proxyAddress
+
       console.log(
         "writing changed address to output file 'addresses/sepolia.json'"
       )
       fs.writeFileSync(
         'addresses/sepolia.json',
-        JSON.stringify(result, null, '\t'),
+        JSON.stringify(sepolia, null, '\t'),
         'utf8'
       )
       break

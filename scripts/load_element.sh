@@ -1,7 +1,6 @@
 
 #!/bin/bash
 # Directly cloned from the script in elf frontend
-rm -rf elf-contracts
 
 echo "Downloading contracts..."
 # link/clone and build contracts
@@ -14,9 +13,10 @@ fi
 
 # blow away old-contracts
 rm -rf contracts/
+rm -rf typechain/
 
 echo "Copying latest contracts..."
-mv elf-contracts/contracts contracts/
+cp -R elf-contracts/contracts contracts/
 
 echo "Removing unused element code"
 rm -rf elf-contracts

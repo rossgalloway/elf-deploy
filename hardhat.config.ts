@@ -25,34 +25,7 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.7.1',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 10000
-          }
-        }
-      },
-      {
-        version: '0.8.0',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 7500
-          }
-        }
-      },
-      {
-        version: '0.8.1',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 7500
-          }
-        }
-      },
-      {
-        version: '0.8.15',
+        version: '0.8.4',
         settings: {
           optimizer: {
             enabled: true,
@@ -60,33 +33,13 @@ const config: HardhatUserConfig = {
           }
         }
       }
-    ],
-    overrides: {
-      'contracts/balancer-core-v2/vault/Vault.sol': {
-        version: '0.7.1',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 400
-          }
-        }
-      },
-      'contracts/balancer-core-v2/pools/weighted/WeightedPoolFactory.sol': {
-        version: '0.7.1',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 800
-          }
-        }
-      }
-    }
+    ]
   },
   mocha: { timeout: 0 },
   networks: {
     hardhat: {
       forking: {
-        url: 'https://eth-mainnet.alchemyapi.io/v2/kwjMP-X-Vajdk1ItCfU-56Uaq1wwhamK',
+        url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_MAINNET_API_KEY}`,
         blockNumber: 11853372
       },
       accounts: {
@@ -103,7 +56,7 @@ const config: HardhatUserConfig = {
       accounts: [`0x${GOERLI_DEPLOYER_PRIVATE_KEY}`]
     },
     mainnet: {
-      url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_MAINNET_API_KEY}`,
+      url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_MAINNET_API_KEY}`,
       accounts: [`0x${MAINNET_DEPLOYER_PRIVATE_KEY}`]
     }
   },

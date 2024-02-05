@@ -10,7 +10,7 @@ import mainnet from 'addresses/mainnet.json'
 import sepolia from 'addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
 import { Tranche__factory } from 'typechain/factories/Tranche__factory'
-import { YVaultAssetProxy__factory } from 'typechain'
+import { YVaultAssetProxy__factory } from 'typechain/factories/YVaultAssetProxy__factory'
 
 async function deployWithAddresses(addresses: YieldForGoodAddresses) {
   if (addresses.trancheFactory == undefined) {
@@ -27,6 +27,9 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
     return
   }
 
+  // 900 is 15 minutes
+  // 21600 is 6 hours
+  // 86400 is 1 day
   const duration = Number.parseInt(readline.question('duration unix seconds: '))
 
   const data = await deployTranche({
@@ -70,9 +73,6 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
     addresses.wrappedPositions[version][wpType][assetSymbol]
   )
   const wpSymbol = await wp.symbol()
-
-  console.log('\nwaiting to verify interest token')
-  await sleep(60000)
 
   // Verify the interest token
   await hre.run('verify:verify', {

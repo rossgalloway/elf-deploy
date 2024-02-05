@@ -7,3 +7,4 @@ elf-contracts
 src/types
 contracts
 typechain
+src/scripts/scratch

@@ -12,10 +12,86 @@ import goerli from '../addresses/goerli.json'
 import mainnet from '../addresses/mainnet.json'
 import _sepolia from '../addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
-import { Test } from 'mocha'
-import { TestERC20 } from 'typechain'
+import { TestERC20 } from 'typechain/TestERC20'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import { ContractTransaction } from 'ethers'
+import { MockERC20YearnVault } from 'typechain/MockERC20YearnVault'
+
+interface MockTokens {
+  dai: TestERC20
+  usdc: TestERC20
+  weth: TestERC20
+}
+
+interface MockVaults {
+  yvDAI: MockERC20YearnVault
+  yvUSDC: MockERC20YearnVault
+  yvWETH: MockERC20YearnVault
+}
+
+export async function deployMockERCTokens(
+  addresses: YieldForGoodAddresses,
+  signer: SignerWithAddress
+): Promise<MockTokens> {
+  console.log('deploying mock token contracts')
+  console.log('deploying DAI...')
+  const dai = await deployMockPermitToken(signer, 'Dai Stablecoin', 'DAI', 18)
+  Logger.successfulDeploy('DAI Token', dai)
+
+  console.log('deploying USDC...')
+  const usdc = await deployMockPermitToken(signer, 'USD Coin', 'USDC', 6)
+  Logger.successfulDeploy('USDC Token', usdc)
+
+  console.log('deploying WETH...')
+  const weth = await deployMockPermitToken(signer, 'Wrapped Ether', 'WETH', 18)
+  Logger.successfulDeploy('WETH Token', weth)
+  return { dai, usdc, weth }
+}
+
+export async function deployMockVaults(
+  signer: SignerWithAddress,
+  tokens: MockTokens
+): Promise<MockVaults> {
+  console.log('deploying mock yearn vaults')
+
+  console.log('deploying yvDAI...')
+  const yvDAI = await deployMockYearnVault(signer, tokens.dai.address)
+  Logger.successfulDeploy('DAI Yearn Vault', yvDAI)
+
+  console.log('deploying yvUSDC...')
+  const yvUSDC = await deployMockYearnVault(signer, tokens.usdc.address)
+  Logger.successfulDeploy('USDC Yearn Vault', yvUSDC)
+
+  console.log('deploying yvWETH...')
+  const yvWETH = await deployMockYearnVault(signer, tokens.weth.address)
+  Logger.successfulDeploy('WETH Yearn Vault', yvWETH)
+
+  return { yvDAI, yvUSDC, yvWETH }
+}
+
+export async function mintTokens(
+  signer: SignerWithAddress,
+  tokens: MockTokens,
+  amounts: { dai: number; usdc: number; weth: number } = {
+    dai: 1_000_000,
+    usdc: 1_000_000,
+    weth: 100_000
+  }
+) {
+  // Mint tokens to signer
+  console.log('minting tokens to signer')
+
+  const gasPrice = readline.question('> Choose Mint gasPrice: ')
+
+  const daiTX = await giveTokens(signer, tokens.usdc, amounts.dai, gasPrice)
+  Logger.successfulMint('DAI', daiTX, amounts.dai)
+
+  const usdcTX = await giveTokens(signer, tokens.dai, amounts.usdc, gasPrice)
+  Logger.successfulMint('USDC', usdcTX, amounts.usdc)
+
+  const wethTX = await giveTokens(signer, tokens.weth, amounts.weth, gasPrice)
+  Logger.successfulMint('WETH', wethTX, amounts.weth)
+}
 
 async function main() {
   const [signer] = await ethers.getSigners()
@@ -23,67 +99,21 @@ async function main() {
   switch (network?.chainId) {
     case 11155111: {
       const sepolia: YieldForGoodAddresses = _sepolia as any
-      console.log('deploying mock token contracts')
-      console.log('deploying DAI...')
-      const dai = await deployMockPermitToken(
-        signer,
-        'Dai Stablecoin',
-        'DAI',
-        18
-      )
-      Logger.successfulDeploy('DAI Token', dai)
-      console.log('deploying USDC...')
-      const usdc = await deployMockPermitToken(signer, 'USD Coin', 'USDC', 6)
-      Logger.successfulDeploy('USDC Token', usdc)
-      console.log(' WETH...')
-      const weth = await deployMockPermitToken(
-        signer,
-        'Wrapped Ether',
-        'WETH',
-        18
-      )
-      Logger.successfulDeploy('WETH Token', weth)
 
-      console.log('deploying mock yearn vaults')
-
-      console.log('deploying yvDAI...')
-      const yvDAI = await deployMockYearnVault(signer, dai.address)
-      Logger.successfulDeploy('DAI Yearn Vault', yvDAI)
-
-      console.log('deploying yvUSDC...')
-      const yvUSDC = await deployMockYearnVault(signer, usdc.address)
-      Logger.successfulDeploy('USDC Yearn Vault', yvUSDC)
-
-      console.log('deploying yvWETH...')
-      const yvWETH = await deployMockYearnVault(signer, weth.address)
-      Logger.successfulDeploy('WETH Yearn Vault', yvWETH)
-
-      // Mint tokens to signer
-      console.log('minting tokens to signer')
-      const daiMint = 1_000_000
-      const usdcMint = 1_000_000
-      const wethMint = 100_000
-      const gasPrice = readline.question('> Choose Mint gasPrice: ')
-
-      const daiTX = await giveTokens(signer, usdc, daiMint, gasPrice)
-      Logger.successfulMint('DAI', daiTX, daiMint)
-
-      const usdcTX = await giveTokens(signer, dai, usdcMint, gasPrice)
-      Logger.successfulMint('USDC', usdcTX, usdcMint)
-
-      const wethTX = await giveTokens(signer, weth, wethMint, gasPrice)
-      Logger.successfulMint('WETH', wethTX, wethMint)
+      const mockERCs = await deployMockERCTokens(sepolia, signer)
+      const mockVaults = await deployMockVaults(signer, mockERCs)
+      await mintTokens(signer, mockERCs)
 
       console.log(
         "writing changed addresses to output file 'addresses/sepolia.json'"
       )
 
-      sepolia.tokens.dai = dai.address
-      sepolia.tokens.usdc = usdc.address
-      sepolia.tokens.weth = weth.address
-      sepolia.vaults.yearn.dai = yvDAI.address
-      sepolia.vaults.yearn.usdc = yvUSDC.address
-      sepolia.vaults.yearn.weth = yvWETH.address
+      sepolia.tokens.dai = mockERCs.dai.address
+      sepolia.tokens.usdc = mockERCs.usdc.address
+      sepolia.tokens.weth = mockERCs.weth.address
+      sepolia.vaults.yearn.dai = mockVaults.yvDAI.address
+      sepolia.vaults.yearn.usdc = mockVaults.yvUSDC.address
+      sepolia.vaults.yearn.weth = mockVaults.yvWETH.address
 
       fs.writeFileSync(
         'addresses/sepolia.json',

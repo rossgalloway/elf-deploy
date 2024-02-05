@@ -20,7 +20,8 @@
     "./test",
     "./typechain",
     "./addresses",
-    "./node_modules"
+    "./node_modules",
+    "utils/fetchPermitData.ts"
   ],
   "files": ["./hardhat.config.ts"]
 }

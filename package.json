@@ -3,6 +3,7 @@
     "load-contracts": "sh scripts/load_element.sh local",
     "load-balancer-contracts": "sh scripts/load_balancer.sh",
     "build": "npx hardhat compile && rm ./typechain/index.ts",
+    "deployAllContracts": "npx hardhat run scripts/deployAllContracts.ts --no-compile",
     "deployPool": "npx hardhat run scripts/deployAMMPools.ts --no-compile",
     "deployTranche": "npx hardhat run scripts/deployTranche.ts --no-compile",
     "deployProxy": "npx hardhat run scripts/deployUserProxy.ts --no-compile",

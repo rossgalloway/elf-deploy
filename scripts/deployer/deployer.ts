@@ -9,7 +9,8 @@ import { DateString__factory } from '../../typechain/factories/DateString__facto
 import { UserProxy__factory } from '../../typechain/factories/UserProxy__factory'
 import { MockERC20YearnVault__factory } from '../../typechain/factories/MockERC20YearnVault__factory'
 import { MockERC20YearnVault } from '../../typechain/MockERC20YearnVault'
-import { TestERC20, TestERC20__factory } from 'typechain'
+import { TestERC20 } from 'typechain/TestERC20'
+import { TestERC20__factory } from 'typechain/factories/TestERC20__factory'
 import * as readline from 'readline-sync'
 import Logger from '../../utils/logger'
 
@@ -251,6 +252,7 @@ export async function deployTranche(deploymentData: TrancheData) {
     // Deploy the tranche for this timestamp
     const gas = readline.question('tranche gasPrice: ')
 
+    Logger.deployContract('Tranche')
     const txReceipt = (await (
       await trancheFactory.deployTranche(
         expiration + timestamp,
