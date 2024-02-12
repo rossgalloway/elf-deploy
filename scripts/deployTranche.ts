@@ -31,11 +31,14 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
   // 21600 is 6 hours
   // 86400 is 1 day
   const duration = Number.parseInt(readline.question('duration unix seconds: '))
+  //TODO: create registry of donation addresses for each recipient
+  const donationAddress = '0x34891B08F7B2F427f8ee690ac083DdE27F11C308'
 
   const data = await deployTranche({
     wrappedPosition: addresses.wrappedPositions[version][wpType][assetSymbol],
     expirations: [duration],
-    trancheFactory: addresses.trancheFactory
+    trancheFactory: addresses.trancheFactory,
+    donationAddress: donationAddress
   })
 
   // create new array if it doesn't exist
@@ -46,7 +49,8 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
   addresses.tranches[assetSymbol].push({
     expiration: data[0].trancheExpirations[0],
     address: data[0].trancheAddresses[0],
-    trancheFactory: addresses.trancheFactory
+    trancheFactory: addresses.trancheFactory,
+    donationAddress: donationAddress
   })
 
   // We auto verify on etherscan

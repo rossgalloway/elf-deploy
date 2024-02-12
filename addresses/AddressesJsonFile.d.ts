@@ -41,6 +41,7 @@ interface Tranche {
   address: string
   expiration: number
   trancheFactory: string
+  donationAddress: string
 }
 
 interface Tranches {

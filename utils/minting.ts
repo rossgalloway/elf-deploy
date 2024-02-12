@@ -39,13 +39,15 @@ export function makeMintCallArgs(
   baseAssetAddress: string,
   trancheUnlockTimestamp: number,
   positionAddress: string,
+  donationAddress: string,
   permitCallData: PermitCallData[]
 ): StaticContractMethodArgs<UserProxy, 'mint'> | undefined {
   if (
     !amount?.gt(0) ||
     !baseAssetAddress ||
     !trancheUnlockTimestamp ||
-    !positionAddress
+    !positionAddress ||
+    !donationAddress
   ) {
     return undefined
   }
@@ -57,6 +59,7 @@ export function makeMintCallArgs(
     baseAssetAddress,
     trancheUnlockTimestamp,
     positionAddress,
+    donationAddress,
     permitCallData
   ]
   if (ethValueOverride) {

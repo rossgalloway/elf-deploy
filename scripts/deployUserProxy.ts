@@ -1,18 +1,65 @@
-import { UserProxyData, deployUserProxy } from './deployer/deployer'
-import { ethers } from 'hardhat'
+import { UserProxy__factory } from '../typechain/factories/UserProxy__factory'
+import hre, { ethers } from 'hardhat'
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import * as readline from 'readline-sync'
 import fs from 'fs'
 import data from '../artifacts/contracts/Tranche.sol/Tranche.json'
 
-import goerli from '../addresses/goerli.json'
-import mainnet from '../addresses/mainnet.json'
 import _sepolia from '../addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
+import Logger from '../utils/logger'
+import { sleep } from '../utils/misc'
 
-// An example of deploying a contract using the deployer. This deploys the user Proxy.
-export async function deployProxyWithAddresses(
-  addresses: YieldForGoodAddresses
+export interface UserProxyData {
+  weth: string // weth address
+  trancheFactory: string // tranche factory address
+  trancheBytecodeHash: string // hash of the Tranche bytecode.
+}
+
+/**
+ * deploys a user proxy contract that takes in the weth address, tranche factory address, and tranche bytecode hash
+ * @param deploymentData
+ * @returns the address of the UserProxy contract
+ */
+export async function deployUserProxy(
+  signer: SignerWithAddress,
+  deploymentData: UserProxyData
 ) {
+  const proxyFactory = new UserProxy__factory(signer)
+  const gas = readline.question('user proxy gasPrice: ')
+  Logger.deployContract('User Proxy')
+  const proxy = await proxyFactory.deploy(
+    deploymentData.weth,
+    deploymentData.trancheFactory,
+    deploymentData.trancheBytecodeHash,
+    {
+      maxFeePerGas: ethers.utils.parseUnits(gas, 'gwei')
+    }
+  )
+  await proxy.deployed()
+  Logger.successfulDeploy('User Proxy', proxy)
+  console.log('Address: ', proxy.address)
+
+  console.log('\nwaiting 1 min to verify user Proxy contract')
+  await sleep(60000)
+
+  const network = await signer.provider?.getNetwork()
+  await hre.run('verify:verify', {
+    network: network?.name,
+    address: proxy.address,
+    constructorArguments: [
+      deploymentData.weth,
+      deploymentData.trancheFactory,
+      deploymentData.trancheBytecodeHash
+    ]
+  })
+
+  return proxy.address
+}
+
+// unused. bring back with multiple deployment networks
+async function deployProxyWithAddresses(addresses: YieldForGoodAddresses) {
+  const [signer] = await ethers.getSigners()
   const weth = addresses.tokens.weth
   const trancheFactory = addresses.trancheFactory
   const trancheBytecodeHash = ethers.utils.solidityKeccak256(
@@ -25,7 +72,7 @@ export async function deployProxyWithAddresses(
     trancheFactory,
     trancheBytecodeHash
   }
-  const proxyAddress = await deployUserProxy(userProxyDeployData)
+  const proxyAddress = await deployUserProxy(signer, userProxyDeployData)
   return proxyAddress
 }
 
@@ -35,7 +82,20 @@ async function main() {
   switch (network?.chainId) {
     case 11155111: {
       const sepolia: YieldForGoodAddresses = _sepolia as any
-      const proxyAddress = await deployProxyWithAddresses(sepolia)
+      console.log(`Deploying UserProxy contract on ${network.name}...`)
+      const weth = sepolia.tokens.weth
+      const trancheFactory = sepolia.trancheFactory
+      const trancheBytecodeHash = ethers.utils.solidityKeccak256(
+        ['bytes'],
+        [data.bytecode]
+      )
+
+      const userProxyDeployData: UserProxyData = {
+        weth,
+        trancheFactory,
+        trancheBytecodeHash
+      }
+      const proxyAddress = await deployUserProxy(signer, userProxyDeployData)
       sepolia.userProxy = proxyAddress
 
       console.log(
@@ -50,28 +110,10 @@ async function main() {
     }
     case 5: {
       console.log('goerli is deprecated')
-      // const result = await deployProxyWithAddresses(goerli)
-      // console.log(
-      //   "writing changed address to output file 'addresses/goerli.json'"
-      // )
-      // fs.writeFileSync(
-      //   'addresses/goerli.json',
-      //   JSON.stringify(result, null, '\t'),
-      //   'utf8'
-      // )
       break
     }
     case 1: {
       console.log('no code for mainnet yet')
-      // const result = await deployProxyWithAddresses(mainnet)
-      // console.log(
-      //   "writing changed address to output file 'addresses/mainnet.json'"
-      // )
-      // fs.writeFileSync(
-      //   'addresses/mainnet.json',
-      //   JSON.stringify(result, null, '\t'),
-      //   'utf8'
-      // )
       break
     }
     default: {

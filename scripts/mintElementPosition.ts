@@ -11,6 +11,7 @@ import * as readline from 'readline-sync'
 
 import _sepolia from '../addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
+import { validateAddresses } from '../utils/misc'
 
 async function ApproveTokens(addresses: YieldForGoodAddresses) {
   // approve the proxy contract to spend the base asset on behalf of the signer.
@@ -53,14 +54,15 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
     return
   }
   const selectedAssetTranches = tranches[tokenSymbol]
-  const selectedAssetTrancheTimestamps = selectedAssetTranches.map(
-    (tranche) => tranche.expiration
-  )
+  // const selectedAssetTrancheTimestamps = selectedAssetTranches.map(
+  //   (tranche) => tranche.expiration
+  // )
+
   // console.log('tranches: ', tranches)
   const currentUnixTime = Math.floor(Date.now() / 1000)
   //check if there are tranches that have not expired
-  const activeTranches = selectedAssetTrancheTimestamps.filter(
-    (timestamp) => timestamp > currentUnixTime
+  const activeTranches = selectedAssetTranches.filter(
+    (tranche) => tranche.expiration > currentUnixTime
   )
   if (activeTranches.length === 0) {
     console.log('Error: no active tranches for selected token')
@@ -73,19 +75,40 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
     return
   }
 
+  // prompt to select donation address
+  // TODO: create more granular donation data so you can select by name
+  const donationAddresses = activeTranches.map(
+    (tranche) => tranche.donationAddress
+  )
+  const uniqueDonationAddresses = [...new Set(donationAddresses)]
+  const uniqueDonationAddressIndex = readline.keyInSelect(
+    uniqueDonationAddresses,
+    'Which donation address do you want to deploy with?'
+  )
+  const donationAddress = uniqueDonationAddresses[uniqueDonationAddressIndex]
+  validateAddresses([donationAddress])
+  const activeTranchesWithSelectedDonation = activeTranches.filter(
+    (tranche) => tranche.donationAddress === donationAddress
+  )
+  console.log('Selected Donation Address: ', donationAddress)
+
   const permitVersion = getPermitVersion(tokenContract.address, network.chainId)
   console.log(`token selected: ${tokenSymbol} (${tokenAddress})`)
 
   //prompt to select tranche expiry
-  const dateOptions = activeTranches.map((unixTime) =>
-    new Date(unixTime * 1000).toLocaleString()
+  // map over active tranches and convert to human readable date
+  const dateOptions = activeTranchesWithSelectedDonation.map((tranche) =>
+    new Date(tranche.expiration * 1000).toLocaleString()
   )
+  // query for which tranche date to deposit into and print the human readable date
   const timestampIndex = readline.keyInSelect(
     dateOptions,
     'Select a tranche to deposit into'
   )
-  const selectedExpiration = activeTranches[timestampIndex]
-  console.log('Selected Unix time:', selectedExpiration)
+  console.log('Selected expiration: ', dateOptions[timestampIndex])
+  // get the selected tranche expiration in unix time from the active tranches
+  const selectedExpiration =
+    activeTranchesWithSelectedDonation[timestampIndex].expiration
 
   //query for how much to deposit
   const amount = readline.question(
@@ -97,8 +120,6 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
   )
 
   console.log('fetching permit data...')
-  // let permitCallData: PermitCallData | undefined
-  // try {
   const permitCallData = await fetchPermitData(
     signer,
     tokenContract,
@@ -108,10 +129,6 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
     nonce,
     permitVersion
   )
-  //   if (permitCallData) {
-  //     return permitCallData
-  //   }
-  // } catch (error) {}
 
   if (!permitCallData) {
     console.log('Error: permit call data not found')
@@ -122,6 +139,7 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
     tokenAddress,
     selectedExpiration, // expiration
     wrappedPositionAddress, //YVaultAssetProxy
+    donationAddress,
     [permitCallData]
   )
 
@@ -131,6 +149,7 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
     return
   }
   console.log('calling mint function on userProxy contract')
+  console.log(...mintCallArgs)
   const mintTX = await userProxyContract.mint(...mintCallArgs)
   await mintTX.wait(1)
   console.log('mint transaction complete')

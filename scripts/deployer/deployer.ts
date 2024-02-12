@@ -13,6 +13,7 @@ import { TestERC20 } from 'typechain/TestERC20'
 import { TestERC20__factory } from 'typechain/factories/TestERC20__factory'
 import * as readline from 'readline-sync'
 import Logger from '../../utils/logger'
+import { sleep, validateAddresses } from '../../utils/misc'
 
 const provider = ethers.providers.getDefaultProvider('sepolia')
 
@@ -34,6 +35,7 @@ export interface TrancheData {
   wrappedPosition: string // Address of the Wrapped Position contract the tranche will use
   expirations: number[] // tranche lengths
   trancheFactory: string // Address of a tranche factory
+  donationAddress: string // Address to send yield to
 }
 
 // An interface to allow us to access the ethers log return
@@ -249,6 +251,7 @@ export async function deployTranche(deploymentData: TrancheData) {
 
   for (let i = 0; i < deploymentData.expirations.length; i++) {
     let expiration = deploymentData.expirations[i]
+    let donationAddress = deploymentData.donationAddress
     // Deploy the tranche for this timestamp
     const gas = readline.question('tranche gasPrice: ')
 
@@ -257,6 +260,7 @@ export async function deployTranche(deploymentData: TrancheData) {
       await trancheFactory.deployTranche(
         expiration + timestamp,
         deploymentData.wrappedPosition,
+        donationAddress,
         {
           maxFeePerGas: ethers.utils.parseUnits(gas, 'gwei')
         }
@@ -334,17 +338,4 @@ export async function deployMockYearnVault(
   })
 
   return vault
-}
-
-function validateAddresses(addresses: string[]): void | never {
-  addresses.forEach((address) => {
-    const isAddress = utils.isAddress(address)
-    if (!isAddress) {
-      throw new Error(`Invalid parameter ${address} is not a valid address!`)
-    }
-  })
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
 }

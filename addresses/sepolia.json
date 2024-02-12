@@ -6,36 +6,52 @@
 	},
 	"interestTokenFactory": "0x59B0e571622bfde932201C20aBA3d7A2942C6604",
 	"dateStringLibrary": "0x9F17eA677659A264d16A38507e1511e83366fa32",
-	"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376",
+	"trancheFactory": "0x2879A67D290d23DA1029C0d86e603E75A3398852",
 	"tranches": {
 		"weth": [
 			{
 				"expiration": 1706830860,
 				"address": "0x622B2D7B5d25A4F358ffC98Bb79cbA7Cd7cC2707",
-				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376",
+				"donationAddress": "none - old contract"
+			},
+			{
+				"expiration": 1707258900,
+				"address": "0xfec16786BbdA30E105f8f4dd36650F3C86bFfA29",
+				"trancheFactory": "0x2879A67D290d23DA1029C0d86e603E75A3398852",
+				"donationAddress": "0x34891B08F7B2F427f8ee690ac083DdE27F11C308"
+			},
+			{
+				"expiration": 1707265188,
+				"address": "0xb3bCb448384d7B6d6F418f7586Ce8bAa65eEc501",
+				"trancheFactory": "0x2879A67D290d23DA1029C0d86e603E75A3398852",
+				"donationAddress": "0x34891B08F7B2F427f8ee690ac083DdE27F11C308"
 			}
 		],
 		"dai": [
 			{
 				"expiration": 1706915760,
 				"address": "0x89D653cC64fbBC0644c9A9Ea8b0375D2dC92Ebf5",
-				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376",
+				"donationAddress": "none - old contract"
 			}
 		],
 		"usdc": [
 			{
 				"expiration": 1706907936,
 				"address": "0x98DFd1DC5554bB48bF11CD81f8460477346D8974",
-				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376",
+				"donationAddress": "none - old contract"
 			},
 			{
 				"expiration": 1706916576,
 				"address": "0x839F1b3b01D9078B68737A8Ecdcd0117529E5976",
-				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376"
+				"trancheFactory": "0x6c653213fa9C836c2540b3cf0C43A513A8490376",
+				"donationAddress": "none - old contract"
 			}
 		]
 	},
-	"userProxy": "0x5bed7976366ac62d2f27f61E6a70BC19a640D456",
+	"userProxy": "0x78a97DD3D944Dc553314b4b8148D1280554cC848",
 	"vaults": {
 		"yearn": {
 			"dai": "0xBEf705211D34657418c3ADd3DB19c5d75873Edf3",
