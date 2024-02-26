@@ -1,9 +1,9 @@
-import { UserProxy__factory } from '../typechain/factories/UserProxy__factory'
+import { YfgUserProxy__factory } from '../typechain/factories/YfgUserProxy__factory'
 import hre, { ethers } from 'hardhat'
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import * as readline from 'readline-sync'
 import fs from 'fs'
-import data from '../artifacts/contracts/Tranche.sol/Tranche.json'
+import data from '../artifacts/contracts/YfgTranche.sol/YfgTranche.json'
 
 import _sepolia from '../addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
@@ -25,7 +25,7 @@ export async function deployUserProxy(
   signer: SignerWithAddress,
   deploymentData: UserProxyData
 ) {
-  const proxyFactory = new UserProxy__factory(signer)
+  const proxyFactory = new YfgUserProxy__factory(signer)
   const gas = readline.question('user proxy gasPrice: ')
   Logger.deployContract('User Proxy')
   const proxy = await proxyFactory.deploy(

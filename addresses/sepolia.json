@@ -4,9 +4,8 @@
 		"usdc": "0xEFF08a02AaE8a2111Ded133975c4C7Bd9df400aA",
 		"weth": "0xc2ad20A968BAD70256aA2a0fDfc64936a555B22F"
 	},
-	"interestTokenFactory": "0x59B0e571622bfde932201C20aBA3d7A2942C6604",
 	"dateStringLibrary": "0x9F17eA677659A264d16A38507e1511e83366fa32",
-	"trancheFactory": "0x2879A67D290d23DA1029C0d86e603E75A3398852",
+	"trancheFactory": "0xCAdbf36889AF3C4BbeAa0f12956A6477113d7cfA",
 	"tranches": {
 		"weth": [
 			{
@@ -25,6 +24,18 @@
 				"expiration": 1707265188,
 				"address": "0xb3bCb448384d7B6d6F418f7586Ce8bAa65eEc501",
 				"trancheFactory": "0x2879A67D290d23DA1029C0d86e603E75A3398852",
+				"donationAddress": "0x34891B08F7B2F427f8ee690ac083DdE27F11C308"
+			},
+			{
+				"expiration": 1707843504,
+				"address": "0x84914997b774061f88396e1dBA9498944bdcEaD9",
+				"trancheFactory": "0xCAdbf36889AF3C4BbeAa0f12956A6477113d7cfA",
+				"donationAddress": "0x34891B08F7B2F427f8ee690ac083DdE27F11C308"
+			},
+			{
+				"expiration": 1707857584,
+				"address": "0x31c059090453BAc59ab4017C4ab508adD356707b",
+				"trancheFactory": "0xCAdbf36889AF3C4BbeAa0f12956A6477113d7cfA",
 				"donationAddress": "0x34891B08F7B2F427f8ee690ac083DdE27F11C308"
 			}
 		],
@@ -51,7 +62,7 @@
 			}
 		]
 	},
-	"userProxy": "0x78a97DD3D944Dc553314b4b8148D1280554cC848",
+	"userProxy": "0x6F7FAE42B129FB89E5fD7Ee5bDC062848ACCCE1a",
 	"vaults": {
 		"yearn": {
 			"dai": "0xBEf705211D34657418c3ADd3DB19c5d75873Edf3",

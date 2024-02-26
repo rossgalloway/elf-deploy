@@ -28,7 +28,6 @@ export interface AddressesJsonFile {
 
 export interface YieldForGoodAddresses {
   tokens: { [key: string]: string }
-  interestTokenFactory: string
   dateStringLibrary: string
   trancheFactory: string
   tranches: Tranches

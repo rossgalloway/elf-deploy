@@ -3,10 +3,8 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 import * as readline from 'readline-sync'
 import fs from 'fs'
 
-import { TrancheFactory__factory } from '../typechain/factories/TrancheFactory__factory'
-import { TrancheFactory } from 'typechain/TrancheFactory'
-import { InterestTokenFactory__factory } from '../typechain/factories/InterestTokenFactory__factory'
-import { InterestTokenFactory } from 'typechain/InterestTokenFactory'
+import { YfgTrancheFactory__factory } from '../typechain/factories/YfgTrancheFactory__factory'
+import { YfgTrancheFactory } from 'typechain/YfgTrancheFactory'
 import { DateString__factory } from '../typechain/factories/DateString__factory'
 import { DateString } from 'typechain/DateString'
 
@@ -14,20 +12,6 @@ import _sepolia from '../addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
 import Logger from '../utils/logger'
 import { sleep } from '../utils/misc'
-
-export async function deployInterestTokenFactory(signer: SignerWithAddress) {
-  const interestTokenFactoryFactory = new InterestTokenFactory__factory(signer)
-  const ytFactoryGas = readline.question('yt factory gasPrice: ')
-  Logger.deployContract('Interest Token Factory')
-  const interestTokenFactory = await interestTokenFactoryFactory.deploy({
-    maxFeePerGas: ethers.utils.parseUnits(ytFactoryGas, 'gwei')
-  })
-  await interestTokenFactory.deployed()
-  Logger.successfulDeploy('Interest Token Factory', interestTokenFactory)
-  console.log('Address: ', interestTokenFactory.address)
-
-  return interestTokenFactory
-}
 
 export async function deployDateLibFactory(signer: SignerWithAddress) {
   //get datestring lib
@@ -47,36 +31,19 @@ export async function deployDateLibFactory(signer: SignerWithAddress) {
 // Deploy the tranche factory
 export async function deployTrancheFactory(
   signer: SignerWithAddress,
-  interestTokenFactoryAddress: string,
   dateLibAddress: string
 ) {
-  const trancheFactoryFactory = new TrancheFactory__factory(signer)
+  const trancheFactoryFactory = new YfgTrancheFactory__factory(signer)
   const trancheFactoryGas = readline.question('tranche factory gasPrice: ')
   Logger.deployContract('Tranche Factory')
-  const trancheFactory = await trancheFactoryFactory.deploy(
-    interestTokenFactoryAddress,
-    dateLibAddress,
-    {
-      maxFeePerGas: ethers.utils.parseUnits(trancheFactoryGas, 'gwei')
-    }
-  )
+  const trancheFactory = await trancheFactoryFactory.deploy(dateLibAddress, {
+    maxFeePerGas: ethers.utils.parseUnits(trancheFactoryGas, 'gwei')
+  })
   await trancheFactory.deployed()
   Logger.successfulDeploy('Tranche Factory', trancheFactory)
   console.log('Address: ', trancheFactory.address)
 
   return trancheFactory
-}
-
-async function verifyInterestTokenFactory(
-  network: string,
-  interestTokenFactoryAddress: string
-) {
-  // make sure you wait 1 min before verifying
-  await hre.run('verify:verify', {
-    network: network,
-    address: interestTokenFactoryAddress,
-    constructorArguments: []
-  })
 }
 
 async function verifyDateLib(network: string, dateLibAddress: string) {
@@ -91,19 +58,17 @@ async function verifyDateLib(network: string, dateLibAddress: string) {
 async function verifyTrancheFactory(
   network: string,
   trancheFactoryAddress: string,
-  interestTokenFactoryAddress: string,
   dateLibAddress: string
 ) {
   // make sure you wait 1 min before verifying
   await hre.run('verify:verify', {
     network: network,
     address: trancheFactoryAddress,
-    constructorArguments: [interestTokenFactoryAddress, dateLibAddress]
+    constructorArguments: [dateLibAddress]
   })
 
   return {
     trancheFactory: trancheFactoryAddress,
-    interestTokenFactory: interestTokenFactoryAddress,
     dateLib: dateLibAddress
   }
 }
@@ -120,31 +85,24 @@ async function main() {
     case 11155111: {
       console.log(`Running factory deployment script on ${networkName}`)
       const sepolia: YieldForGoodAddresses = _sepolia as any
-      const interestTokenFactoryAddress = sepolia.interestTokenFactory
+
+      //if the datelib factory is already deployed, get the address
       const dateLibAddress = sepolia.dateStringLibrary
 
       // run deployments here
-      // const interestTokenFactory = await deployInterestTokenFactory(signer)
-      // const interestTokenFactoryAddress = interestTokenFactory.address
       // const dateLib = await deployDateLibFactory(signer)
       // const dateLibAddress = dateLib.address
-      const trancheFactory = await deployTrancheFactory(
-        signer,
-        interestTokenFactoryAddress,
-        dateLibAddress
-      )
+      const trancheFactory = await deployTrancheFactory(signer, dateLibAddress)
       const trancheFactoryAddress = trancheFactory.address
 
       // verify here after waiting 1 min
       console.log('\nwaiting 1 min before verifying deployments')
       await sleep(60000)
 
-      // await verifyInterestTokenFactory(networkName, interestTokenFactoryAddress)
       // await verifyDateLib(networkName, dateLibAddress)
       await verifyTrancheFactory(
         networkName,
         trancheFactoryAddress,
-        interestTokenFactoryAddress,
         dateLibAddress
       )
 

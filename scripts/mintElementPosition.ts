@@ -3,7 +3,7 @@ import {
   getPermitVersion,
   PermitCallData
 } from '../utils/fetchPermitData'
-import { UserProxy__factory } from 'typechain/factories/UserProxy__factory'
+import { YfgUserProxy__factory } from 'typechain/factories/YfgUserProxy__factory'
 import { ERC20Permit__factory } from 'typechain/factories/ERC20Permit__factory'
 import { makeMintCallArgs } from '../utils/minting'
 import { ethers } from 'hardhat'
@@ -27,7 +27,7 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
   const network = await signer.provider.getNetwork()
 
   // create and connect to userProxy
-  const userProxyContract = UserProxy__factory.connect(
+  const userProxyContract = YfgUserProxy__factory.connect(
     addresses.userProxy,
     signer
   )
@@ -149,11 +149,11 @@ export async function mintElementPosition(addresses: YieldForGoodAddresses) {
     return
   }
   console.log('calling mint function on userProxy contract')
-  console.log(...mintCallArgs)
+  // console.log(...mintCallArgs)
   const mintTX = await userProxyContract.mint(...mintCallArgs)
   await mintTX.wait(1)
   console.log('mint transaction complete')
-  console.log(mintTX)
+  console.log(`https://sepolia.etherscan.io/tx/${mintTX.hash}`)
 }
 
 async function main() {

@@ -1,16 +1,12 @@
 import { ethers } from 'hardhat'
 import * as readline from 'readline-sync'
 import fs from 'fs'
-import { deployTranche } from './deployer/deployer'
 import hre from 'hardhat'
 
-// Edit to import the correct version
-import goerli from 'addresses/goerli.json'
-import mainnet from 'addresses/mainnet.json'
 import sepolia from 'addresses/sepolia.json'
 import { YieldForGoodAddresses } from 'addresses/AddressesJsonFile'
-import { Tranche__factory } from 'typechain/factories/Tranche__factory'
-import { YVaultAssetProxy__factory } from 'typechain/factories/YVaultAssetProxy__factory'
+import { deployTranche } from './deployer/deployer'
+import { sleep } from '../utils/misc'
 
 async function deployWithAddresses(addresses: YieldForGoodAddresses) {
   if (addresses.trancheFactory == undefined) {
@@ -23,7 +19,7 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
   const assetSymbol = readline.question('wp underlying symbol: ').toLowerCase()
 
   if (addresses.wrappedPositions[version][wpType][assetSymbol] == undefined) {
-    console.log('Error: please init wp')
+    console.log('Error: please init wrapped position')
     return
   }
 
@@ -58,6 +54,7 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
   const network = await signer.provider?.getNetwork()
   const networkName = network?.name
 
+  // TODO: move verification after writing addresses to file
   console.log('\nwaiting to verify tranche')
   await sleep(60000)
 
@@ -66,28 +63,6 @@ async function deployWithAddresses(addresses: YieldForGoodAddresses) {
     network: networkName,
     address: data[0].trancheAddresses[0],
     constructorArguments: []
-  })
-
-  // Load the data to verify the interest token
-  const trancheFactory = new Tranche__factory(signer)
-  const tranche = trancheFactory.attach(data[0].trancheAddresses[0])
-  const ytAddress = await tranche.interestToken()
-  const wpFactory = new YVaultAssetProxy__factory(signer)
-  const wp = wpFactory.attach(
-    addresses.wrappedPositions[version][wpType][assetSymbol]
-  )
-  const wpSymbol = await wp.symbol()
-
-  // Verify the interest token
-  await hre.run('verify:verify', {
-    network: networkName,
-    address: ytAddress,
-    constructorArguments: [
-      tranche.address,
-      wpSymbol,
-      data[0].trancheExpirations[0],
-      await tranche.decimals()
-    ]
   })
 
   return addresses
@@ -111,28 +86,10 @@ async function main() {
     }
     case 5: {
       console.log('goerli is deprecated')
-      // const result = await deployWithAddresses(goerli)
-      // console.log(
-      //   "writing changed address to output file 'addresses/goerli.json'"
-      // )
-      // fs.writeFileSync(
-      //   'addresses/goerli.json',
-      //   JSON.stringify(result, null, '\t'),
-      //   'utf8'
-      // )
       break
     }
     case 1: {
       console.log('no code for mainnet yet')
-      // const result = await deployWithAddresses(mainnet)
-      // console.log(
-      //   "writing changed address to output file 'addresses/mainnet.json'"
-      // )
-      // fs.writeFileSync(
-      //   'addresses/mainnet.json',
-      //   JSON.stringify(result, null, '\t'),
-      //   'utf8'
-      // )
       break
     }
     default: {
@@ -147,6 +104,3 @@ main()
     console.error(error)
     process.exit(1)
   })
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
